@@ -71,7 +71,7 @@ public class PersonalHealthcareSystem {
         return responseMessage;
     }
 
-    // run a mock scenario where a gesture is recognized, and based on certain input params
+    // run a mock scenario based on certain input params
     // inpMessage - the initial message of the scenario
     // didCallPatient - preset whether the scenario occurs before/after a patient has already been called
     // didVisitPatient - preset whether the scenario occurs before/after a patient has already been visited
