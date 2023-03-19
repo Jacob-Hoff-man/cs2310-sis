@@ -30,11 +30,25 @@ public class PersonalHealthcareSystem {
     }
     
     public void printMessageResponseHistory() {
-        System.out.println("CURRENT MESSAGE RESPONSE HISTORY:");
+        System.out.println("CURRENT messageResponseHistory VALUE:");
         for (int i = 0; i < messageResponseHistory.size(); i++) {
             Message m = messageResponseHistory.get(i);
             System.out.println("#" + i + ": " + m.toString());
         }
+    }
+
+    public void printDidCallPatient() {
+        System.out.println("CURRENT didCallPatient VALUE: " + didCallPatient);
+    }
+
+    public void printDidVisitPatient() {
+        System.out.println("CURRENT didVisitPatient VALUE: " + didVisitPatient);
+    }
+
+    public void printState() {
+        printMessageResponseHistory();
+        printDidCallPatient();
+        printDidVisitPatient();
     }
 
     public List<Message> clearMessageResponseHistory() {
@@ -67,26 +81,42 @@ public class PersonalHealthcareSystem {
         this.didVisitPatient = didVisitPatient;
 
         Message responseMessage = inpMessage;
-        // final message to be sent in a scenario or failure message are the only time SYSTEM is receiver
-        wloop: while (responseMessage.receiver != ComponentName.SYSTEM) {
-            switch(responseMessage.receiver) {
-                case GESTURE_RECOGNITION:
-                    responseMessage = this.grc.handleMessage(responseMessage);
-                    break;
-                case EMERGENCY_MANAGER:
-                    if (responseMessage.messageType == MessageType.NEEDS_HELP)
-                    responseMessage = this.emc.handleMessage(responseMessage, this.didCallPatient);
-                    else responseMessage = this.emc.handleMessage(responseMessage);
-                    break;
-                case HOMECARE_STAFF:
-                    if (responseMessage.messageType == MessageType.CALL_PATIENT)
-                    responseMessage = this.hsc.handleMessage(responseMessage, patientAnswersPhone);
-                    else responseMessage = this.hsc.handleMessage(responseMessage);
-                    break;
-                default:
-                    break wloop;
-            }
+        if (responseMessage.receiver == ComponentName.SYSTEM) {
+            // initial message is meant for SYSTEM component
+            // handle didCallPatient state var
+            if (responseMessage.messageType == MessageType.CALLING_PATIENT_SUCCESS) didCallPatient = true;
+            // handle didVisitPatient state var
+            if (responseMessage.messageType == MessageType.VISITING_PATIENT_SUCCESS) didVisitPatient = true;
             messageResponseHistory.add(responseMessage);
+
+        } else {
+            // initial message is not meant for SYSTEM component
+            // final message to be sent in a scenario or failure message are the only time SYSTEM is receiver
+            wloop: while (responseMessage.receiver != ComponentName.SYSTEM) {
+                sw: switch(responseMessage.receiver) {
+                    case GESTURE_RECOGNITION:
+                        responseMessage = this.grc.handleMessage(responseMessage);
+                        break sw;
+                    case EMERGENCY_MANAGER:
+                        if (responseMessage.messageType == MessageType.NEEDS_HELP)
+                        responseMessage = this.emc.handleMessage(responseMessage, this.didCallPatient);
+                        else responseMessage = this.emc.handleMessage(responseMessage);
+                        break sw;
+                    case HOMECARE_STAFF:
+                        if (responseMessage.messageType == MessageType.CALL_PATIENT)
+                        responseMessage = this.hsc.handleMessage(responseMessage, patientAnswersPhone);
+                        else responseMessage = this.hsc.handleMessage(responseMessage);
+                        break sw;
+                    default:
+                        break wloop;
+                }
+                // new message in responseMessage
+                messageResponseHistory.add(responseMessage);
+                // handle didCallPatient state var
+                if (responseMessage.messageType == MessageType.CALLING_PATIENT_SUCCESS) this.didCallPatient = true;
+                // handle didVisitPatient state var
+                if (responseMessage.messageType == MessageType.VISITING_PATIENT_SUCCESS) this.didVisitPatient = true;
+            }
         }
     }
     

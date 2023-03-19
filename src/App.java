@@ -153,25 +153,26 @@ public class App {
 
         PersonalHealthcareSystem phs = new PersonalHealthcareSystem();
         phs.runScenario(inpMsg, inpDidCallPatient, inpDidVisitPatient, inpPatientAnswersPhone);
-        phs.printMessageResponseHistory();
+        phs.printState();
     }
 
     public static void performScenario1() {
         PersonalHealthcareSystem phs = new PersonalHealthcareSystem();
         phs.scenario1();
-        phs.printMessageResponseHistory();
+        phs.printState();
     }
 
     public static void performScenario2() {
         PersonalHealthcareSystem phs = new PersonalHealthcareSystem();
         phs.scenario2();
-        phs.printMessageResponseHistory();
+        phs.printState();
+
     }
 
     public static void performScenario3() {
         PersonalHealthcareSystem phs = new PersonalHealthcareSystem();
         phs.scenario3();
-        phs.printMessageResponseHistory();
+        phs.printState();
     }
 
     public static void main(String[] args) throws Exception {
