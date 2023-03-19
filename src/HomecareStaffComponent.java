@@ -1,5 +1,10 @@
 public class HomecareStaffComponent implements Component {
+    public ComponentName name;
 
+    public HomecareStaffComponent() {
+        this.name = ComponentName.HOMECARE_STAFF;
+    }
+    
     public Message handleMessage(Message inpMessage) {
         switch (inpMessage.messageType) {
             case REGISTER:

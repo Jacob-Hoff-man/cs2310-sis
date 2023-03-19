@@ -1,5 +1,9 @@
 public class EmergencyManagerComponent implements Component {
-    public EmergencyManagerComponent() {}
+    public ComponentName name;
+
+    public EmergencyManagerComponent() {
+        this.name = ComponentName.EMERGENCY_MANAGER;
+    }
 
     public Message handleMessage(Message inpMessage) {
         switch (inpMessage.messageType) {

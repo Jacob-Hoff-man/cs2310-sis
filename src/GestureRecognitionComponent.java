@@ -1,5 +1,9 @@
 public class GestureRecognitionComponent implements Component {
-    public GestureRecognitionComponent() {}
+    public ComponentName name;
+
+    public GestureRecognitionComponent() {
+        this.name = ComponentName.GESTURE_RECOGNITION;
+    }
 
     public Message handleMessage(Message inpMessage) {
         switch (inpMessage.messageType) {
